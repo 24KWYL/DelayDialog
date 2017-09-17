@@ -12,6 +12,8 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.lang.ref.WeakReference;
+
 /**
  * 自定义加载对话框，实现延时显示，短时间不显示
  * create by 24k
@@ -41,7 +43,7 @@ public class DelayDialog extends Dialog{
         setContentView(root);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
-        myHandler = new MyHandler();
+        myHandler = new MyHandler(this);
     }
 
     @Override
@@ -68,27 +70,36 @@ public class DelayDialog extends Dialog{
     }
 
     private class MyHandler extends Handler{
+        private WeakReference<DelayDialog> weakReference;
+        DelayDialog delayDialog;
+        public MyHandler(DelayDialog delayDialog) {
+            weakReference = new WeakReference<>(delayDialog);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case DIALOG_DISMISS:
-                    if(myHandler.hasMessages(DIALOG_SHOW)) {
-                        dismissReally();
-                    } else if(myHandler.hasMessages(DIALOG_DISMISS_DELAY)) {
-                        myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, Integer.MAX_VALUE);
-                    } else {
-                        dismissReally();
-                    }
-                    break;
-                case DIALOG_SHOW:
-                    showReallyDialog();
-                    myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS_DELAY, DELAY_SHOW);
-                    break;
-                case DIALOG_DISMISS_DELAY:
-                    if(myHandler.hasMessages(DIALOG_DISMISS)) {
-                        dismissReally();
-                    }
-                    break;
+            delayDialog = weakReference.get();
+            if (delayDialog != null) {
+                switch (msg.what) {
+                    case DIALOG_DISMISS:
+                        if (myHandler.hasMessages(DIALOG_SHOW)) {
+                            dismissReally();
+                        } else if (myHandler.hasMessages(DIALOG_DISMISS_DELAY)) {
+                            myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, Integer.MAX_VALUE);
+                        } else {
+                            dismissReally();
+                        }
+                        break;
+                    case DIALOG_SHOW:
+                        showReallyDialog();
+                        myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS_DELAY, DELAY_SHOW);
+                        break;
+                    case DIALOG_DISMISS_DELAY:
+                        if (myHandler.hasMessages(DIALOG_DISMISS)) {
+                            dismissReally();
+                        }
+                        break;
+                }
             }
         }
     }
