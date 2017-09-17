@@ -1,0 +1,35 @@
+Dialog方法：
+
+  addContentView(View view, ViewGroup.LayoutParams params)：在现有基础上添加view
+
+  dispatchKeyEvent(KeyEvent event):拦截按键事件
+
+  dispatchTouchEvent(MotionEvent ev)：拦截触摸事件
+
+  getWindow()：获取window
+
+  hide()：隐藏，但是没有dismiss
+
+  isShowing()：是否正在显示
+
+  requestWindowFeature(int featureId)：设置windows的样式
+
+  onTouchEvent(MotionEvent event)：处理触摸事件
+
+  setCancelable(boolean flag)：BACK键是否可以使Dialog进行dismiss
+
+  setCanceledOnTouchOutside(boolean cancel)：触摸外部是否可以进行dismiss
+
+  setContentView(View view)：设置布局
+
+  show()：显示，方法中不要进行一些其余操作，仅仅用于显示。其余操作可以放置在onStart中进行
+
+  dismiss()：对话框消失。
+
+  cancel()：对话框消失，回调DialogInterface.OnCancelListener，其实也调用了dismiss()
+
+  onCreate(Bundle savedInstanceState)
+
+  onStart()
+
+  onStop()
