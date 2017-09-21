@@ -33,3 +33,44 @@ Dialog方法：
   onStart()
 
   onStop()
+
+  PopupWindow方法：
+
+  dismiss():隐藏
+
+  isShowing()：正在显示
+
+  setBackgroundDrawable(Drawable background)：设置背景
+
+  setContentView(View contentView)：设置布局
+
+   	setFocusable(boolean focusable)：设置可以获取焦点
+
+   	setOnDismissListener(PopupWindow.OnDismissListener onDismissListener)：隐藏监听
+
+   	setOutsideTouchable(boolean touchable)：外部可点击进行dismiss
+
+   	showAsDropDown(View anchor, int xoff, int yoff)
+
+   	showAsDropDown(View anchor)
+
+   	showAtLocation(View parent, int gravity, int x, int y)
+
+   	二者的区别：
+   	1）AlertDialog是非阻塞线程的，Popupwindow是阻塞线程的。
+   	2）PopupWindow位置相对随意，设置上更灵活。依附于某一个具体的view，Dialog的位置相对固定。
+   	（1）Popupwindow在显示之前一定要设置宽高，Dialog无此限制。
+    （2）Popupwindow默认不会响应物理键盘的back，除非显示设置了popup.setFocusable(true);而在点击back的时候，Dialog会消失。
+    （3）Popupwindow不会给页面其他的部分添加蒙层，而Dialog会。
+    （4）Popupwindow没有标题，Dialog默认有标题，可以通过dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);取消标题
+    （5）二者显示的时候都要设置Gravity。如果不设置，Dialog默认是Gravity.CENTER。
+    （6）二者都有默认的背景，都可以通过setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));去掉。
+
+    1)Unable to add window -- token null is not valid; is your activity running?
+
+    http://www.jianshu.com/p/825d1cc9fa79
+
+    http://tool.oschina.net/apidocs/apidoc?api=android/reference
+
+    １)Dialog在初始化的时候会自动创建PhoneWindow
+    2）PopupWindow会依附于某一个具体的view，所以在创建的时候view并没有加载出来，所以会报错。
