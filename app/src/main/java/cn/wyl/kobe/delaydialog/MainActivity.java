@@ -9,7 +9,6 @@ import android.widget.PopupWindow;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Dialog dialog;
-    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.tv2).setOnClickListener(this);
         findViewById(R.id.tv3).setOnClickListener(this);
         findViewById(R.id.tv4).setOnClickListener(this);
-        popupWindow=new PopupWindow(this);
-        popupWindow.setContentView(LayoutInflater.from(this).inflate(R.layout.dialog_delay_progress,null));
-        popupWindow.showAsDropDown(findViewById(R.id.tv1));
-        dialog.show();
     }
 
     @Override
@@ -51,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 start(10000);
                 break;
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
     }
 
     private void start(final long time) {
