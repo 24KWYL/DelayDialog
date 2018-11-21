@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * 自定义加载对话框，实现延时显示，短时间不显示
  * create by 24k
  */
-public class DelayDialog extends Dialog{
+public class DelayDialog extends Dialog {
     private static final int DELAY_HIDE = 500; // 不显示时间
     private static final int DELAY_SHOW = 1000; // 最短显示时间
 
@@ -34,12 +34,12 @@ public class DelayDialog extends Dialog{
     public DelayDialog(Context context) {
         super(context);
         mContext = context;
-        mParantActivity = (Activity)context;
+        mParantActivity = (Activity) context;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
         View root = LayoutInflater.from(context).inflate(R.layout.dialog_delay_progress, null, false);
-        layoutProgressBar = (LinearLayout)root.findViewById(R.id.ll);
-        circleProgressBar = (ProgressBar)root.findViewById(R.id.progressBar);
+        layoutProgressBar = (LinearLayout) root.findViewById(R.id.ll);
+        circleProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         setContentView(root);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
@@ -48,7 +48,7 @@ public class DelayDialog extends Dialog{
 
     @Override
     public void show() {
-        if(!isShowing()){
+        if (!isShowing()) {
             myHandler.sendEmptyMessageDelayed(DIALOG_SHOW, DELAY_HIDE);
         }
     }
@@ -60,18 +60,19 @@ public class DelayDialog extends Dialog{
 
     public void dismissReally() {
         try {
-            if(mParantActivity != null  && !mParantActivity.isFinishing()){
+            if (mParantActivity != null && !mParantActivity.isFinishing()) {
                 myHandler.removeCallbacksAndMessages(null);
                 super.dismiss();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private class MyHandler extends Handler{
+    private static class MyHandler extends Handler {
         private WeakReference<DelayDialog> weakReference;
         DelayDialog delayDialog;
+
         public MyHandler(DelayDialog delayDialog) {
             weakReference = new WeakReference<>(delayDialog);
         }
@@ -82,21 +83,21 @@ public class DelayDialog extends Dialog{
             if (delayDialog != null) {
                 switch (msg.what) {
                     case DIALOG_DISMISS:
-                        if (myHandler.hasMessages(DIALOG_SHOW)) {
-                            dismissReally();
-                        } else if (myHandler.hasMessages(DIALOG_DISMISS_DELAY)) {
-                            myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, Integer.MAX_VALUE);
+                        if (delayDialog.myHandler.hasMessages(DIALOG_SHOW)) {
+                            delayDialog.dismissReally();
+                        } else if (delayDialog.myHandler.hasMessages(DIALOG_DISMISS_DELAY)) {
+                            delayDialog.myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS, Integer.MAX_VALUE);
                         } else {
-                            dismissReally();
+                            delayDialog.dismissReally();
                         }
                         break;
                     case DIALOG_SHOW:
-                        showReallyDialog();
-                        myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS_DELAY, DELAY_SHOW);
+                        delayDialog.showReallyDialog();
+                        delayDialog.myHandler.sendEmptyMessageDelayed(DIALOG_DISMISS_DELAY, DELAY_SHOW);
                         break;
                     case DIALOG_DISMISS_DELAY:
-                        if (myHandler.hasMessages(DIALOG_DISMISS)) {
-                            dismissReally();
+                        if (delayDialog.myHandler.hasMessages(DIALOG_DISMISS)) {
+                            delayDialog.dismissReally();
                         }
                         break;
                 }
@@ -104,10 +105,10 @@ public class DelayDialog extends Dialog{
         }
     }
 
-    private void showReallyDialog(){
+    private void showReallyDialog() {
         try {
             super.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
